@@ -49,7 +49,7 @@
             {{-- Right Side Of Navbar --}}
             <ul class="nav navbar-nav navbar-right">
                 {{-- Authentication Links --}}
-                <li><a href="{{ route('cart.index') }}">Cart ({{ Cart::count() }})</a></li>
+                <li><a href="{{ route('cart.index') }}">Cart ({{ count(Cart::content()) }})</a></li>
                 @if (Auth::guest())
                     <li><a href="{{ route('login') }}">{!! trans('titles.login') !!}</a></li>
                     <li><a href="{{ route('register') }}">{!! trans('titles.register') !!}</a></li>

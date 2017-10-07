@@ -91,26 +91,20 @@ class UsersManagementController extends Controller
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
-
-        $ipAddress = new CaptureIpTrait();
-        $profile   = new Profile();
-
-        $user = User::create([
+        $data   = [
             'name' => $request->input('name'),
             'first_name' => $request->input('first_name'),
             'last_name' => $request->input('last_name'),
             'email' => $request->input('email'),
-            'password' => bcrypt($request->input('password')),
-            'token' => str_random(64),
-            'admin_ip_address' => $ipAddress->getClientIp(),
-            'activated' => 1,
-        ]);
+            'role' => $request->input('role'),
+            'password' => $request->input('password'),
+        ];
+        $result = $this->guzzleService->postGuzzleRequest(route('user.create'), $data);
+        if ($result['status']['http_code'] == 200) {
+            return redirect('users')->with('success', trans('usersmanagement.createSuccess'));
+        }
 
-        $user->profile()->save($profile);
-        $user->attachRole($request->input('role'));
-        $user->save();
-
-        return redirect('users')->with('success', trans('usersmanagement.createSuccess'));
+        return redirect('users')->with('error', 'User creation failed');
     }
 
     /**
@@ -140,20 +134,19 @@ class UsersManagementController extends Controller
      */
     public function edit($id)
     {
-        $user  = User::findOrFail($id);
-        $roles = Role::all();
+        $url    = route('user.info', $id);
+        $result = $this->guzzleService->getGuzzleRequest($url);
+        if ($result['status']['http_code'] == 200) {
+            $data = [
+                'user' => $result['data']['user'],
+                'roles' => $result['data']['roles'],
+                'currentRole' => $result['data']['user']['role_id'],
+            ];
 
-        foreach ($user->roles as $user_role) {
-            $currentRole = $user_role;
+            return view('usersmanagement.edit-user')->with($data);
         }
 
-        $data = [
-            'user' => $user,
-            'roles' => $roles,
-            'currentRole' => $currentRole,
-        ];
-
-        return view('usersmanagement.edit-user')->with($data);
+        return view('usersmanagement.edit-user')->with([]);
     }
 
     /**
@@ -166,46 +159,29 @@ class UsersManagementController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $currentUser = Auth::user();
-        $user        = User::find($id);
-        $emailCheck  = ($request->input('email') != '') && ($request->input('email') != $user->email);
-        $ipAddress   = new CaptureIpTrait();
-
-        if ($emailCheck) {
-            $validator = Validator::make($request->all(), [
-                'name' => 'required|max:255',
-                'email' => 'email|max:255|unique:users',
-                'password' => 'present|confirmed|min:6',
-            ]);
-        } else {
-            $validator = Validator::make($request->all(), [
-                'name' => 'required|max:255',
-                'password' => 'nullable|confirmed|min:6',
-            ]);
-        }
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'password' => 'nullable|confirmed|min:6',
+        ]);
 
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
-
-        $user->name       = $request->input('name');
-        $user->first_name = $request->input('first_name');
-        $user->last_name  = $request->input('last_name');
-
-        if ($emailCheck) {
-            $user->email = $request->input('email');
-        }
-
+        $data               = [];
+        $data['name']       = $request->input('name');
+        $data['first_name'] = $request->input('first_name');
+        $data['last_name']  = $request->input('last_name');
+        $data['email']      = $request->input('email');
+        $data['role']       = $request->input('role');
         if ($request->input('password') != null) {
-            $user->password = bcrypt($request->input('password'));
+            $data['password'] = $request->input('password');
+        }
+        $result = $this->guzzleService->putGuzzleRequest(route('user.update', $id), $data);
+        if ($result['status']['http_code'] == 200) {
+            return back()->with('success', trans('usersmanagement.updateSuccess'));
         }
 
-        $user->detachAllRoles();
-        $user->attachRole($request->input('role'));
-        $user->updated_ip_address = $ipAddress->getClientIp();
-        $user->save();
-
-        return back()->with('success', trans('usersmanagement.updateSuccess'));
+        return back()->with('success', 'Failed to Update');
     }
 
     /**
@@ -217,16 +193,16 @@ class UsersManagementController extends Controller
      */
     public function destroy($id)
     {
-        $currentUser = Auth::user();
-        $user        = User::findOrFail($id);
-        $ipAddress   = new CaptureIpTrait();
+        $currentUser   = Auth::user();
+        $getUserUrl    = route('user.info', $id);
+        $deleteUserUrl = route('user.delete', $id);
 
-        if ($user->id != $currentUser->id) {
-            $user->deleted_ip_address = $ipAddress->getClientIp();
-            $user->save();
-            $user->delete();
-
-            return redirect('users')->with('success', trans('usersmanagement.deleteSuccess'));
+        $result = $this->guzzleService->getGuzzleRequest($getUserUrl);
+        if ($result['status']['http_code'] == 200 && $currentUser->id != $result['data']['user']['id']) {
+            $delResult = $this->guzzleService->deleteGuzzleRequest($deleteUserUrl);
+            if ($delResult['status']['http_code'] == 200) {
+                return redirect('users')->with('success', trans('usersmanagement.deleteSuccess'));
+            }
         }
 
         return back()->with('error', trans('usersmanagement.deleteSelfError'));

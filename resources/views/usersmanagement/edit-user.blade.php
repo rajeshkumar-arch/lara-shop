@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('template_title')
-  Editing User {{ $user->name }}
+  Editing User {{ $user['name'] }}
 @endsection
 
 @section('template_linked_css')
@@ -21,9 +21,9 @@
         <div class="panel panel-default">
           <div class="panel-heading">
 
-            <strong>Editing User:</strong> {{ $user->name }}
+            <strong>Editing User:</strong> {{ $user['name'] }}
 
-            <a href="/users/{{$user->id}}" class="btn btn-primary btn-xs pull-right" style="margin-left: 1em;">
+            <a href="/users/{{$user['id']}}" class="btn btn-primary btn-xs pull-right" style="margin-left: 1em;">
               <i class="fa fa-fw fa-mail-reply" aria-hidden="true"></i>
              Back  <span class="hidden-xs">to User</span>
             </a>
@@ -35,14 +35,14 @@
 
           </div>
 
-          {!! Form::model($user, array('action' => array('UsersManagementController@update', $user->id), 'method' => 'PUT')) !!}
+          {!! Form::model($user, array('action' => array('UsersManagementController@update', $user['id']), 'method' => 'PUT')) !!}
 
             {!! csrf_field() !!}
 
             <div class="panel-body">
 
               <div class="form-group has-feedback row {{ $errors->has('name') ? ' has-error ' : '' }}">
-                {!! Form::label('name', 'Username' , array('class' => 'col-md-3 control-label')); !!}
+                {!! Form::label('name', 'Username' , array('class' => 'col-md-3 control-label')) !!}
                 <div class="col-md-9">
                   <div class="input-group">
                     {!! Form::text('name', old('name'), array('id' => 'name', 'class' => 'form-control', 'placeholder' => trans('forms.ph-username'))) !!}
@@ -52,7 +52,7 @@
               </div>
 
               <div class="form-group has-feedback row {{ $errors->has('email') ? ' has-error ' : '' }}">
-                {!! Form::label('email', 'E-mail' , array('class' => 'col-md-3 control-label')); !!}
+                {!! Form::label('email', 'E-mail' , array('class' => 'col-md-3 control-label')) !!}
                 <div class="col-md-9">
                   <div class="input-group">
                     {!! Form::text('email', old('email'), array('id' => 'email', 'class' => 'form-control', 'placeholder' => trans('forms.ph-useremail'))) !!}
@@ -98,9 +98,9 @@
                   <div class="input-group">
                     <select class="form-control" name="role" id="role">
                       <option value="">{{ trans('forms.create_user_ph_role') }}</option>
-                      @if ($roles->count())
+                      @if (count($roles))
                         @foreach($roles as $role)
-                          <option value="{{ $role->id }}" {{ $currentRole->id == $role->id ? 'selected="selected"' : '' }}>{{ $role->name }}</option>
+                          <option value="{{ $role['id'] }}" {{ $currentRole == $role['id'] ? 'selected="selected"' : '' }}>{{ $role['name'] }}</option>
                         @endforeach
                       @endif
                     </select>
@@ -116,7 +116,7 @@
 
               <div class="pw-change-container">
                 <div class="form-group has-feedback row">
-                  {!! Form::label('password', trans('forms.create_user_label_password'), array('class' => 'col-md-3 control-label')); !!}
+                  {!! Form::label('password', trans('forms.create_user_label_password'), array('class' => 'col-md-3 control-label')) !!}
                   <div class="col-md-9">
                     <div class="input-group">
                       {!! Form::password('password', array('id' => 'password', 'class' => 'form-control ', 'placeholder' => trans('forms.create_user_ph_password'))) !!}

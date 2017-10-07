@@ -35,7 +35,7 @@
                                                     src="{{ $product['image'] }}" alt="product"
                                                     class="img-responsive"></a>
                                         <a href="{{ url('shop', [$product['slug']]) }}"><h3>{{ $product['name'] }}</h3>
-                                            <p>${{ $product['price'] }}</p>
+                                            <p>INR {{ $product['price'] }}</p>
                                             <button type="button" class="btn btn-primary">View</button>
                                         </a>
 

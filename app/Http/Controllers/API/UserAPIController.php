@@ -29,16 +29,8 @@ class UserAPIController extends BaseController
             'message' => 'Users List',
         ];
         try {
-            $query         = "SELECT
-                        users.*,
-                        roles.name as role_name
-                    FROM users
-                    LEFT JOIN role_user ON role_user.user_id = users.id
-                    LEFT JOIN roles ON role_user.role_id = roles.id";
-            $users         = DB::select($query);
-            $roles         = Role::all();
+            $users         = $this->userRepo->getAll();
             $data['users'] = $users;
-            $data['roles'] = $roles;
 
         } catch (\Exception $e) {
             $statusCode = 500;
@@ -56,21 +48,95 @@ class UserAPIController extends BaseController
         $statusCode = 200;
         $response   = [
             'success' => true,
-            'message' => 'Product Information',
+            'message' => 'User Information',
         ];
         try {
-            $query         = "SELECT
-                        users.*,
-                        roles.name as role_name
-                    FROM users
-                    LEFT JOIN role_user ON role_user.user_id = users.id
-                    LEFT JOIN roles ON role_user.role_id = roles.id
-                    where users.id={$id} limit 1";
-            $users         = DB::select($query);
-            $roles         = Role::all();
-            $data['user'] = $users[0];
+            $users         = $this->userRepo->find($id);
+            $data['user']  = $users[0];
+            $data['roles'] = $this->userRepo->userRoles();
         } catch (\Exception $e) {
             $statusCode = 500;
+        }
+
+        return $this
+            ->setStatusCode($statusCode)
+            ->setDataBag($data)
+            ->respond($response);
+    }
+
+    public function deleteUser($id)
+    {
+        $data       = [];
+        $statusCode = 200;
+        $response   = [
+            'success' => true,
+            'message' => 'User Deleted',
+        ];
+        try {
+            DB::beginTransaction();
+            $this->userRepo->delete($id);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $statusCode = 500;
+            $response   = [
+                'success' => false,
+                'message' => 'User Deletion Failed',
+            ];
+        }
+
+        return $this
+            ->setStatusCode($statusCode)
+            ->setDataBag($data)
+            ->respond($response);
+    }
+
+    public function updateUser(Request $request, $id)
+    {
+        $data       = [];
+        $statusCode = 200;
+        $response   = [
+            'success' => true,
+            'message' => 'User Updated',
+        ];
+        try {
+            DB::beginTransaction();
+            $this->userRepo->updateUserData($id, $request);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $statusCode = 500;
+            $response   = [
+                'success' => false,
+                'message' => 'User Updation Failed',
+            ];
+        }
+
+        return $this
+            ->setStatusCode($statusCode)
+            ->setDataBag($data)
+            ->respond($response);
+    }
+
+    public function createUser(Request $request)
+    {
+        $data       = [];
+        $statusCode = 200;
+        $response   = [
+            'success' => true,
+            'message' => 'User Created',
+        ];
+        try {
+            DB::beginTransaction();
+            $this->userRepo->createUser($request);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $statusCode = 500;
+            $response   = [
+                'success' => false,
+                'message' => 'User Creation Failed',
+            ];
         }
 
         return $this

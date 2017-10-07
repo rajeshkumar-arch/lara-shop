@@ -122,5 +122,3 @@ Route::group(['middleware' => ['auth', 'activated', 'role:admin']], function () 
         ],
     ]);
 });
-
-//Route::get('/cart-items', ['as' => 'cart.itemss', 'uses' => 'API\CartAPIController@getCartItems']);

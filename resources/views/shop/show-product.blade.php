@@ -22,7 +22,7 @@
                     </div>
 
                     <div class="col-md-8">
-                        <h3>${{ $product['price'] }}</h3>
+                        <h3>INR {{ $product['price'] }}</h3>
                         <form action="{{ url('/cart') }}" method="POST" class="side-by-side">
                             {!! csrf_field() !!}
                             <input type="hidden" name="id" value="{{ $product['id'] }}">

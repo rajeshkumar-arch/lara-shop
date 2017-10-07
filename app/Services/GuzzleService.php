@@ -87,7 +87,7 @@ class GuzzleService
      *
      * @return mixed|string
      */
-    protected function postGuzzleRequest($url, $data, $raw = false, $rawResponse = false)
+    public function postGuzzleRequest($url, $data, $raw = false, $rawResponse = false)
     {
         try {
             if (!$this->host) {
@@ -141,7 +141,7 @@ class GuzzleService
      * @param bool $raw
      * @return mixed|string
      */
-    protected function putGuzzleRequest($url, $data, $raw = false)
+    public function putGuzzleRequest($url, $data, $raw = false)
     {
         try {
             if (!$this->host) {
@@ -211,7 +211,7 @@ class GuzzleService
      * @param bool $raw
      * @return mixed|string
      */
-    protected function deleteGuzzleRequest($url)
+    public function deleteGuzzleRequest($url)
     {
         try {
             if (!$this->host) {

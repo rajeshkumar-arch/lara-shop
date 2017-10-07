@@ -58,7 +58,7 @@
                                     <option {{ $item['qty'] == 5 ? 'selected' : '' }}>5</option>
                                 </select>
                             </td>
-                            <td>${{ $item['subtotal'] }}</td>
+                            <td>INR. {{ $item['subtotal'] }}</td>
                             <td class=""></td>
                             <td>
                                 <form action="{{ url('cart', [$item['rowId']]) }}" method="POST" class="side-by-side">
@@ -74,7 +74,7 @@
                         <td class="table-image"></td>
                         <td></td>
                         <td class="small-caps table-bg" style="text-align: right">Subtotal</td>
-                        <td>${{ $subtotal }}</td>
+                        <td>INR. {{ $subtotal }}</td>
                         <td></td>
                         <td></td>
                     </tr>
@@ -82,7 +82,7 @@
                         <td class="table-image"></td>
                         <td></td>
                         <td class="small-caps table-bg" style="text-align: right">Tax</td>
-                        <td>${{ $tax }}</td>
+                        <td>INR. {{ $tax }}</td>
                         <td></td>
                         <td></td>
                     </tr>
@@ -91,7 +91,7 @@
                         <td class="table-image"></td>
                         <td style="padding: 40px;"></td>
                         <td class="small-caps table-bg" style="text-align: right">Your Total</td>
-                        <td class="table-bg">${{ $total }}</td>
+                        <td class="table-bg">INR. {{ $total }}</td>
                         <td class="column-spacer"></td>
                         <td></td>
                     </tr>
