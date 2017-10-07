@@ -11,3 +11,7 @@
 7. From the projects root folder run `php artisan db:seed`
 
 Now run the project
+
+User credentials : 
+Admin User: admin@admin.com/password
+Guest User: user@user.com/password
