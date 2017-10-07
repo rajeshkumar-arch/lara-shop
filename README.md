@@ -12,6 +12,7 @@
 
 Now run the project
 
-User credentials : 
-Admin User: admin@admin.com/password
-Guest User: user@user.com/password
+#### credentials : 
+
+1. Admin Access: admin@admin.com/password
+1. User Access: user@user.com/password
