@@ -114,32 +114,6 @@
 												</div>
 											</div>
 
-											<div class="form-group has-feedback {{ $errors->has('twitter_username') ? ' has-error ' : '' }}">
-												{!! Form::label('twitter_username', trans('profile.label-twitter_username') , array('class' => 'col-sm-4 control-label')); !!}
-												<div class="col-sm-6">
-													{!! Form::text('twitter_username', old('twitter_username'), array('id' => 'twitter_username', 'class' => 'form-control', 'placeholder' => trans('profile.ph-twitter_username'))) !!}
-													<span class="glyphicon glyphicon-pencil form-control-feedback" aria-hidden="true"></span>
-											        @if ($errors->has('twitter_username'))
-											            <span class="help-block">
-											                <strong>{{ $errors->first('twitter_username') }}</strong>
-											            </span>
-											        @endif
-												</div>
-											</div>
-
-											<div class="margin-bottom-2 form-group has-feedback {{ $errors->has('github_username') ? ' has-error ' : '' }}">
-												{!! Form::label('github_username', trans('profile.label-github_username') , array('class' => 'col-sm-4 control-label')); !!}
-												<div class="col-sm-6">
-													{!! Form::text('github_username', old('github_username'), array('id' => 'github_username', 'class' => 'form-control', 'placeholder' => trans('profile.ph-twitter_username'))) !!}
-													<span class="glyphicon glyphicon-pencil form-control-feedback" aria-hidden="true"></span>
-											        @if ($errors->has('github_username'))
-											            <span class="help-block">
-											                <strong>{{ $errors->first('github_username') }}</strong>
-											            </span>
-											        @endif
-												</div>
-											</div>
-
 											<div class="form-group">
 												<div class="col-sm-6 col-sm-offset-4">
 
