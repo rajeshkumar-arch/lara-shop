@@ -18,11 +18,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/products', ['as' => 'products.list', 'uses' => 'API\ProductAPIController@getProducts']);
-Route::get('/product/{product_slug}', ['as' => 'product.show', 'uses' => 'API\ProductAPIController@getProduct']);
+Route::get('/products/{product_slug}', ['as' => 'product.show', 'uses' => 'API\ProductAPIController@getProduct']);
 Route::get('/cart', ['as' => 'cart.items', 'uses' => 'API\CartAPIController@getCartItems']);
 
 
 // Registered, activated, and is admin routes.
 Route::group([], function () {
     Route::get('/users', ['as' => 'users.list', 'uses' => 'API\UserAPIController@getUsers']);
+    Route::get('/users/{id}', ['as' => 'user.info', 'uses' => 'API\UserAPIController@getUser']);
 });

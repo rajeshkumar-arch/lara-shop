@@ -29,14 +29,14 @@ class UserAPIController extends BaseController
             'message' => 'Users List',
         ];
         try {
-            $query = "SELECT
+            $query         = "SELECT
                         users.*,
                         roles.name as role_name
                     FROM users
                     LEFT JOIN role_user ON role_user.user_id = users.id
                     LEFT JOIN roles ON role_user.role_id = roles.id";
-            $users  = DB::select($query);
-            $roles  = Role::all();
+            $users         = DB::select($query);
+            $roles         = Role::all();
             $data['users'] = $users;
             $data['roles'] = $roles;
 
@@ -50,7 +50,7 @@ class UserAPIController extends BaseController
             ->respond($response);
     }
 
-    public function getUser($slug)
+    public function getUser($id)
     {
         $data       = [];
         $statusCode = 200;
@@ -59,7 +59,16 @@ class UserAPIController extends BaseController
             'message' => 'Product Information',
         ];
         try {
-//            $data['product'] = $this->productRepo->findSlug($slug);
+            $query         = "SELECT
+                        users.*,
+                        roles.name as role_name
+                    FROM users
+                    LEFT JOIN role_user ON role_user.user_id = users.id
+                    LEFT JOIN roles ON role_user.role_id = roles.id
+                    where users.id={$id} limit 1";
+            $users         = DB::select($query);
+            $roles         = Role::all();
+            $data['user'] = $users[0];
         } catch (\Exception $e) {
             $statusCode = 500;
         }

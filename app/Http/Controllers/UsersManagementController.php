@@ -122,9 +122,13 @@ class UsersManagementController extends Controller
      */
     public function show($id)
     {
-        $user = User::find($id);
+        $url    = route('user.info', $id);
+        $result = $this->guzzleService->getGuzzleRequest($url);
+        if ($result['status']['http_code'] == 200) {
+            return view('usersmanagement.show-user')->with($result['data']);
+        }
 
-        return view('usersmanagement.show-user')->withUser($user);
+        return view('usersmanagement.show-user')->with([]);
     }
 
     /**
